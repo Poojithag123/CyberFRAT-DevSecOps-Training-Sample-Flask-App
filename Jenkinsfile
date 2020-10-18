@@ -1,10 +1,17 @@
 pipeline {
-agent any
-stages {
-stage('Build Docket Image') {
-steps {
-sh 'docker build -t cyberfrat:$BUILD_NUMBER .'
-}
-}
-}
-}
+  agent any
+  
+  stages {
+    stage('Build Docker Image') {
+      steps {
+        sh 'docker build -t cyberfrat:$BUILD_NUMBER .'
+        }
+    }
+    
+    stage('Test Run') {
+      steps {
+        sh 'docker run -d cyberfrat:$BUILD_NUMBER'
+      }
+    }
+  } 
+} 
