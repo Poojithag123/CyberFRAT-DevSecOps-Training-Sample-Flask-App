@@ -6,14 +6,29 @@ pipeline {
   }
   
   agent any
-  
+   stage('Check for Secrets'){
+      steps {
+        sh "rm -rf trufflehog.json || true"
+        sh "docker run dxa4481/trufflehog:latest --json https://github.com/deepshankaryadav/CyberFRAT-DevSecOps-Training-Sample-Flask-App.git > trufflehog.json || true"
+        sh "cat trufflehog.json"
+      }
+    }
+    
+    stage('SCA'){
+      steps {
+        sh "pip3 install safety"
+        sh "rm -rf safety.json || true"
+        sh "safety check -r requirements.txt --json > safety.json || true"
+        sh "cat safety.json"
+      }
+    }
  
   
   stages {
-     stage('SAST'){
+      stage('SAST'){
       steps {
         sh "rm -rf bandit.json || true"
-        sh "bandit -r -f=json -o=bandit.json ."
+        sh "bandit -r -f=json -o=bandit.json --exit-zero ."
         sh "cat bandit.json"
       }
     }
