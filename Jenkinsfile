@@ -7,15 +7,16 @@ pipeline {
   
   agent any
   
-  stage('SAST'){
+ 
+  
+  stages {
+     stage('SAST'){
       steps {
         sh "rm -rf bandit.json || true"
         sh "bandit -r -f=json -o=bandit.json ."
         sh "cat bandit.json"
       }
     }
-  
-  stages {
     stage('Build Docker Image') {
       steps {
         script {
